@@ -1,22 +1,22 @@
 import time
 
+def branch_and_bound(clique_atual, vertices_restantes, melhor_clique, grafo):
+    if len(vertices_restantes) == 0:
+        if len(clique_atual) > len(melhor_clique):
+            melhor_clique = clique_atual[:]
+        return
+
+    for v in vertices_restantes:
+        novos_vertices_restantes = [w for w in vertices_restantes if grafo[v][w] == 1]
+        clique_atual.append(v)
+        branch_and_bound(clique_atual, novos_vertices_restantes, melhor_clique, grafo)
+        clique_atual.pop()
+        
 def clique(grafo, n):
-    melhor_clique = []
-
-    def branch_and_bound(clique_atual, vertices_restantes):
-        nonlocal melhor_clique
-        if len(vertices_restantes) == 0:
-            if len(clique_atual) > len(melhor_clique):
-                melhor_clique = clique_atual[:]
-            return
-
-        for v in vertices_restantes:
-            novos_vertices_restantes = [w for w in vertices_restantes if grafo[v][w] == 1]
-            clique_atual.append(v)
-            branch_and_bound(clique_atual, novos_vertices_restantes)
-            clique_atual.pop()
-
-    branch_and_bound([], list(range(n)))
+    melhor_clique = [0]
+    
+    branch_and_bound([], list(range(n)), melhor_clique, grafo)
+    
     return melhor_clique
 
 if __name__ == "__main__":
