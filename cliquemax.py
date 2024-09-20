@@ -5,8 +5,8 @@ def eCompleta(vertices_restantes): #Verifica se a solução é completa, ou seja
         return True
     return False
 
-def ePromissora(clique_atual, vertices_restantes, melhor_clique): #Verifica se o eventual clique tem potencial de ser melhor que a solução melhor atual
-    if (len(clique_atual)+len(vertices_restantes)) > len(melhor_clique[0]):
+def ePromissora(clique_atual, vertices_candidatos, melhor_clique): #Verifica se o eventual clique tem potencial de ser melhor que a solução melhor atual
+    if (len(clique_atual)+len(vertices_candidatos)) > len(melhor_clique[0]):
         return True
     return False
 

@@ -1,82 +1,94 @@
 import time
 
-def satisfatibilidade(clauses, n_vars):
-    def backtrack(assignment, var_index):
-        # Verificar se a atribuição parcial já viola alguma cláusula
-        if not is_partial_assignment_valid(clauses, assignment, var_index):
-            return False  # Poda: Não vale a pena continuar se já houver inconsistências
+def verificar_formula(clausulas, variaveis): #Verifica se os valores atribuídos às variáveis satisfazem todas as cláusulas simultaneamente 
+    for clausula in clausulas:
+        satisfaz = False
+        for i, literal in enumerate(clausula):
+            if literal == 1 and variaveis[i]:  # Variável positiva e verdadeira = True
+                satisfaz = True
+                break #Pula para analisar a próxima clásula
+            elif literal == 0 and not variaveis[i]:  # Variável negada e falsa = True
+                satisfaz = True
+                break #Pula para analisar a próxima clásula
+            
+        if not satisfaz: # Se alguma cláusula não for satisfeita, retorna falso
+            return False  
+        
+    return True  # Todas as cláusulas foram satisfeitas
 
-        # Se todas as variáveis foram atribuídas, verifica se a fórmula é satisfeita
-        if var_index == n_vars:
-            return check_formula(clauses, assignment)
-
-        # Tenta atribuir True ou False para a próxima variável
-        for value in [True, False]:
-            assignment[var_index] = value
-            if backtrack(assignment, var_index + 1):
-                return True
-
+def backtrack(clausulas, variaveis, numero_variaveis):
+    #Verifica se a solução parcial é consistente, estratégia para evitar busca exaustiva
+    if not is_partial_solution_is_valid(clausulas, variaveis):
         return False
-
-    def check_formula(clauses, assignment):
-        """Verifica se a fórmula é satisfeita para uma atribuição completa."""
-        for clause in clauses:
-            satisfied = False
-            for i, literal in enumerate(clause):
-                if literal == 1 and assignment[i]:  # Variável positiva e verdadeira
-                    satisfied = True
-                    break
-                elif literal == 0 and not assignment[i]:  # Variável negada e falsa
-                    satisfied = True
-                    break
-            if not satisfied:
-                return False  # Se alguma cláusula não for satisfeita, retorna falso
-        return True  # Todas as cláusulas foram satisfeitas
-
-    def is_partial_assignment_valid(clauses, assignment, var_index):
-        """Verifica se a atribuição parcial é válida, ou seja, se não viola alguma cláusula."""
-        for clause in clauses:
-            satisfied = False
-            for i, literal in enumerate(clause):
-                # Se estamos analisando além do índice já atribuído, ignoramos
-                if assignment[i] is None:
-                    continue
-
-                if literal == 1 and assignment[i]:  # Variável positiva e verdadeira
-                    satisfied = True
-                    break
-                elif literal == 0 and not assignment[i]:  # Variável negada e falsa
-                    satisfied = True
-                    break
-
-            # Se a cláusula não é satisfeita, mas ainda temos variáveis a atribuir, ignoramos
-            if not satisfied and assignment.count(None) == 0:
-                return False  # Poda: Se já sabemos que não podemos satisfazer a cláusula
-
-        return True  # Ainda pode ser possível satisfazer a fórmula
-
-    # Inicialização da atribuição
-    assignment = [None] * n_vars
+    
+    #Se todas as variáveis estão atribuídas, verifica se as clausulas são satisfeitas simultaneamente
+    if None not in variaveis:
+        return verificar_formula(clausulas, variaveis)
+    
+    #Próxima variável a ser atribuída
+    index_prox = variaveis.index(None)
+    
+    for valor in [True, False]:
+        #Proximo passo do backtrack
+        variaveis[index_prox] = valor
+        if backtrack(clausulas, variaveis, numero_variaveis):
+            return True
+        variaveis[index_prox] = None #Caso a tentativa tenha gerado uma solução que não satisfaz, retorna o passo anterior
+        
+    return False
+    
+#Função principal que chama o backtracking
+def satisfatibilidade(clausulas, numero_variaveis):
+    variaveis = [None] * numero_variaveis
     start_time = time.time()
-    satisfaz = backtrack(assignment, 0)
+    satisfaz = backtrack(clausulas, variaveis, numero_variaveis)
     end_time = time.time()
 
-    # Retorna o resultado final
     if satisfaz:
-        return f"Satisfazível. Atribuição: {assignment}. Tempo de execução: {end_time - start_time:.4f} segundos"
+        return f"Satisfazível. Atribuição: {variaveis}. Tempo de execução: {end_time - start_time:.4f} segundos"
     else:
         return f"Não satisfazível. Tempo de execução: {end_time - start_time:.4f} segundos"
 
 
+#Verifica se as variáveis presentes em uma cláusula estão com valores atribuídos
+def ha_atribuicao_para_todas_variaveis_validas_na_clausula(clausula, variaveis):
+    for i, literal in enumerate(clausula):
+        if literal != -1 and variaveis[i] == None:
+            return False
+    return True
+       
+#Verifica se a solução parcial é consistente para continuar os passos do backtracking
+def is_partial_solution_is_valid(clausulas, variaveis):
+    for clausula in clausulas:
+            if -1 in clausula: #Caso haja uma variável (ou mais) não presentes em uma cláusula
+                #Verifica-se se as demais variáveis presentes possuem valores
+                if ha_atribuicao_para_todas_variaveis_validas_na_clausula(clausula, variaveis):
+                    satisfied = False
+                    for i, literal in enumerate(clausula):
+                        if literal == 1 and variaveis[i]:  # Variável positiva e verdadeira = True
+                            satisfied = True
+                            break
+                        
+                        elif literal == 0 and not variaveis[i]:  # Variável negada e falsa = True
+                            satisfied = True
+                            break
+
+                    # Se a cláusula não é satisfeita, significa que não faz sentido expandir o backtrack a partir de tal solução parcial
+                    if not satisfied:
+                        return False  # Poda: Se já sabemos que não podemos satisfazer a cláusula
+
+    return True  # Ainda pode ser possível satisfazer a fórmula
+  
+#Lê as cláusulas a partir de um arquivo previamente formatado conforme padrão exposto
 def ler_entrada_arquivo(nome_arquivo):
     try:
         with open(nome_arquivo, 'r') as f:
-            n_vars = int(f.readline().strip())
-            clauses = []
+            numero_variaveis = int(f.readline().strip())
+            clausulas = []
             for linha in f:
-                clause = list(map(int, linha.strip().split()))
-                clauses.append(clause)
-        return clauses, n_vars
+                clausula = list(map(int, linha.strip().split()))
+                clausulas.append(clausula)
+        return clausulas, numero_variaveis
     except FileNotFoundError:
         print(f"Erro: O arquivo '{nome_arquivo}' não foi encontrado.")
         return [], 0
@@ -86,9 +98,9 @@ def ler_entrada_arquivo(nome_arquivo):
 
 if __name__ == "__main__":
     nome_arquivo = 'sat_input.txt'
-    clauses, n_vars = ler_entrada_arquivo(nome_arquivo)
-    if clauses and n_vars:
-        resultado = satisfatibilidade(clauses, n_vars)
+    clausulas, numero_variaveis = ler_entrada_arquivo(nome_arquivo)
+    if clausulas and numero_variaveis:
+        resultado = satisfatibilidade(clausulas, numero_variaveis)
         print(resultado)
     else:
         print("Erro ao processar a entrada.")

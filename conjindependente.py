@@ -11,6 +11,7 @@ def complemento_grafo(grafo, n):
                grafo[i][j] = 0
    return grafo
 
+#Redução
 def conjunto_independente(grafo, n):
     grafo_complemento = complemento_grafo(grafo, n)
     return maxclique(grafo_complemento, n)
