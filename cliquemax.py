@@ -16,10 +16,21 @@ def vertices_com_arestas_com_v(v, vertices, grafo):
         if grafo[v][w] == 1: #Vértice com aresta com vértice V
             vertices_com_arestas_com_v.append(w)
     return vertices_com_arestas_com_v
-        
+
+def melhorInicialGuloso(clique_atual, vertices_restantes, grafo, n):
+    if(len(vertices_restantes) == 0):
+        return clique_atual
+    
+    v = vertices_restantes[0] #Melhor solução inicial começará a partir do primeiro vértice
+    novos_vertices_restantes = vertices_com_arestas_com_v(v, vertices_restantes, grafo)
+    clique_atual.append(v)
+    melhorSolucaoInicial = melhorInicialGuloso(clique_atual, novos_vertices_restantes, grafo, n)
+    return melhorSolucaoInicial
+           
 def branch_and_bound(clique_atual, vertices_restantes, melhor_clique, grafo):
     if eCompleta(vertices_restantes):
         melhor_clique[0] = clique_atual[:]
+        return
        
     for v in vertices_restantes:
         novos_vertices_restantes = vertices_com_arestas_com_v(v, vertices_restantes, grafo) #Adiciona todos os vértices como promissores que possuem aresta com o vértice v, garante que todas as soluções serão consistentes
@@ -29,9 +40,12 @@ def branch_and_bound(clique_atual, vertices_restantes, melhor_clique, grafo):
         clique_atual.pop() #Remove v do clique atual para explorar uma eventual solução utilizando o próximo vértice do for
 
 def maxclique(grafo, n):
-    melhor_clique = [[0]] #Solução melhor inicial
+    vertices = list(range(n))
     
-    branch_and_bound([], list(range(n)), melhor_clique, grafo) #Solução inicial = []
+    melhor_clique = [[]]
+    melhor_clique.append(melhorInicialGuloso([], vertices, grafo, n)) #Solução melhor inicial
+    
+    branch_and_bound([], vertices, melhor_clique, grafo) #Solução inicial = []
     
     return melhor_clique
 
