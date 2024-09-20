@@ -1,6 +1,7 @@
 import time
 from cliquemax import maxclique
 
+#Função de transformação da instancia para o problema de clique máximo em tempo polinomial
 def complemento_grafo(grafo, n):
    for i in range(n):
        for j in range(n):
@@ -17,16 +18,22 @@ def conjunto_independente(grafo, n):
     return maxclique(grafo_complemento, n)
 
 if __name__ == "__main__":
-    # Lê o grafo de um arquivo
-    with open('conjindinput.txt', 'r') as f:
-        n = int(f.readline().strip())
-        grafo = [list(map(int, linha.split())) for linha in f.readlines()]
+    arquivos = ['input/independentconjinput/input1.txt',
+                'input/independentconjinput/input2.txt',
+                'input/independentconjinput/input3.txt']
 
-    # Mede o tempo de execução
-    start_time = time.time()
-    conjunto_independente_maximo = conjunto_independente(grafo, n)
-    end_time = time.time()
+    for arquivo in arquivos:
+        # Lê o grafo de um arquivo
+        with open(arquivo, 'r') as f:
+            n = int(f.readline().strip())
+            grafo = [list(map(int, linha.split())) for linha in f.readlines()]
 
-    # Imprime o conjunto independente máximo encontrado e o tempo de execução
-    print("Conjunto independente máximo:", conjunto_independente_maximo[0])
-    print(f"Tempo de execução: {end_time - start_time:.4f} segundos")
+        # Mede o tempo de execução
+        start_time = time.time()
+        conjunto_independente_maximo = conjunto_independente(grafo, n)
+        end_time = time.time()
+
+        # Imprime o conjunto independente máximo encontrado e o tempo de execução
+        print(f"Arquivo: {arquivo}")
+        print("Conjunto independente máximo:", conjunto_independente_maximo[0])
+        print(f"Tempo de execução: {end_time - start_time:.8f} segundos\n")

@@ -50,16 +50,23 @@ def maxclique(grafo, n):
     return melhor_clique
 
 if __name__ == "__main__":
-    # Lê o grafo de um arquivo
-    with open('clique_input.txt', 'r') as f:
-        n = int(f.readline().strip())
-        grafo = [list(map(int, linha.split())) for linha in f.readlines()]
+    arquivos = ['input/maxcliqueinput/input1.txt',
+                'input/maxcliqueinput/input2.txt',
+                'input/maxcliqueinput/input3.txt'
+               ]
 
-    # Mede o tempo de execução
-    start_time = time.time()
-    clique_maximo = maxclique(grafo, n)
-    end_time = time.time()
+    for arquivo in arquivos:
+        # Lê o grafo de um arquivo
+        with open(arquivo, 'r') as f:
+            n = int(f.readline().strip())
+            grafo = [list(map(int, linha.split())) for linha in f.readlines()]
 
-    # Imprime o clique máximo encontrado e o tempo de execução
-    print("Clique máximo:", clique_maximo[0])
-    print(f"Tempo de execução: {end_time - start_time:.7f} segundos")
+        # Mede o tempo de execução
+        start_time = time.time()
+        clique_maximo = maxclique(grafo, n)
+        end_time = time.time()
+
+        # Imprime o clique máximo encontrado e o tempo de execução
+        print(f"Arquivo: {arquivo}")
+        print("Clique máximo:", clique_maximo[0])
+        print(f"Tempo de execução: {end_time - start_time:.7f} segundos\n")

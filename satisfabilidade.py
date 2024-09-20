@@ -45,9 +45,9 @@ def satisfatibilidade(clausulas, numero_variaveis):
     end_time = time.time()
 
     if satisfaz:
-        return f"Satisfazível. Atribuição: {variaveis}. Tempo de execução: {end_time - start_time:.4f} segundos"
+        return f"Satisfazível. Atribuição: {variaveis}. Tempo de execução: {end_time - start_time:.7f} segundos"
     else:
-        return f"Não satisfazível. Tempo de execução: {end_time - start_time:.4f} segundos"
+        return f"Não satisfazível. Tempo de execução: {end_time - start_time:.7f} segundos"
 
 
 #Verifica se as variáveis presentes em uma cláusula estão com valores atribuídos
@@ -97,10 +97,15 @@ def ler_entrada_arquivo(nome_arquivo):
         return [], 0
 
 if __name__ == "__main__":
-    nome_arquivo = 'sat_input.txt'
-    clausulas, numero_variaveis = ler_entrada_arquivo(nome_arquivo)
-    if clausulas and numero_variaveis:
-        resultado = satisfatibilidade(clausulas, numero_variaveis)
-        print(resultado)
-    else:
-        print("Erro ao processar a entrada.")
+    # Lista de arquivos de entrada
+    arquivos = ['input/satinput/input1.txt', 
+                'input/satinput/input2.txt', 
+                'input/satinput/input3.txt']
+    
+    for nome_arquivo in arquivos:
+        clausulas, numero_variaveis = ler_entrada_arquivo(nome_arquivo)
+        if clausulas and numero_variaveis:
+            resultado = satisfatibilidade(clausulas, numero_variaveis)
+            print(f"Resultado para {nome_arquivo}: {resultado}")
+        else:
+            print(f"Erro ao processar a entrada do arquivo {nome_arquivo}.")
