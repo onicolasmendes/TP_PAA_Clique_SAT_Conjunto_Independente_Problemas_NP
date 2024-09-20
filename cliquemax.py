@@ -9,13 +9,20 @@ def ePromissora(clique_atual, vertices_restantes, melhor_clique): #Verifica se o
     if (len(clique_atual)+len(vertices_restantes)) > len(melhor_clique[0]):
         return True
     return False
-    
+
+def vertices_com_arestas_com_v(v, vertices, grafo):
+    vertices_com_arestas_com_v = []
+    for w in vertices:
+        if grafo[v][w] == 1: #Vértice com aresta com vértice V
+            vertices_com_arestas_com_v.append(w)
+    return vertices_com_arestas_com_v
+        
 def branch_and_bound(clique_atual, vertices_restantes, melhor_clique, grafo):
     if eCompleta(vertices_restantes):
         melhor_clique[0] = clique_atual[:]
        
     for v in vertices_restantes:
-        novos_vertices_restantes = [w for w in vertices_restantes if grafo[v][w] == 1] #Adiciona todos os vértices como promissores que possuem aresta com o vértice v, garante que todas as soluções serão consistentes
+        novos_vertices_restantes = vertices_com_arestas_com_v(v, vertices_restantes, grafo) #Adiciona todos os vértices como promissores que possuem aresta com o vértice v, garante que todas as soluções serão consistentes
         clique_atual.append(v) #Adiciona v ao conjunto de clique atual para eventualmente explorar uma solução que o contém
         if(ePromissora(clique_atual, novos_vertices_restantes, melhor_clique)): #Poda
             branch_and_bound(clique_atual, novos_vertices_restantes, melhor_clique, grafo)
