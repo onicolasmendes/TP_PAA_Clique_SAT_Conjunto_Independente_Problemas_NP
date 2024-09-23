@@ -5,7 +5,7 @@ from cliquemax import maxclique
 def complemento_grafo(grafo, n):
    for i in range(n):
        for j in range(n):
-           if i != j: #Desconsiderando a presença de "1" na diagonal principal, conforme orientado pelo professor
+           if i != j: 
             if grafo[i][j] == 0:
                grafo[i][j] = 1
             else:
