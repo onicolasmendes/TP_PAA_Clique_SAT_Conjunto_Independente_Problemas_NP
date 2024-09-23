@@ -19,6 +19,6 @@ Dado um grafo, o objetivo é encontrar o maior conjunto de vértices independent
 
 Método de Solução: Resolução por redução polinomial ao problema do Clique.
 
-##Tecnologias Utilizadas
+## Tecnologias Utilizadas
 Linguagem: Python
 Estruturas de dados: Matrizes de adjacência e fórmulas booleanas
