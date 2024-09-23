@@ -1,4 +1,4 @@
-# Trabalho Prático: Implementação de Algoritmos Satisfatibilidade, Clique e Conjunto Independente
+# Trabalho Prático da Disciplina de Projeto e Análise de Algoritmos: Implementação de Algoritmos Satisfatibilidade, Clique e Conjunto Independente
 ## Descrição Geral
 Este repositório contém a implementação de três algoritmos fundamentais em teoria dos grafos e lógica booleana: Satisfatibilidade (SAT), Clique e Conjunto Independente. Cada um desses problemas é resolvido utilizando diferentes técnicas de otimização e busca.
 
@@ -21,4 +21,5 @@ Método de Solução: Resolução por redução polinomial ao problema do Clique
 
 ## Tecnologias Utilizadas
 Linguagem: Python
+
 Estruturas de dados: Matrizes de adjacência e fórmulas booleanas
